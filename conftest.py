@@ -3,11 +3,12 @@ import pytest
 import allure
 from selenium import webdriver
 
+
+SLOW_THRESHOLD = 5.0
+
 def pytest_runtest_setup(item):
     item.start_time = time.time()
     print(f"\n=== START TEST: {item.name} ===")
-
-
 
 
 def pytest_collection_modifyitems(config, items):
@@ -20,11 +21,8 @@ def pytest_collection_modifyitems(config, items):
             item.user_properties.append(("device", "desktop"))
 
         if "slow" in item.keywords:
-            item.add_marker(pytest.mark.skip(reason="Skipping slow tests"))
+            item.add_marker(pytest.mark.skip(reason="Skipping slow tests (duration > 5s)"))
 
-
-
-SLOW_THRESHOLD = 5.0  # секунды
 
 @pytest.hookimpl(hookwrapper=True)
 def pytest_runtest_makereport(item, call):
@@ -38,11 +36,9 @@ def pytest_runtest_makereport(item, call):
         item.duration = duration
         print(f"=== TEST DURATION: {duration:.2f} seconds ===")
 
-        # если тест дольше 5 сек → считаем slow
         if duration > SLOW_THRESHOLD:
             item.add_marker(pytest.mark.slow)
             print(f"=== TEST MARKED AS SLOW (duration {duration:.2f}s) ===")
-
 
 @pytest.fixture
 def browser(request):
