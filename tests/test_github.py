@@ -12,5 +12,8 @@ from pages.github_home_page import GithubHomePageDesktop, GithubHomePageMobile
 def test_github_sign_in(page_class, browser):
     page = page_class(browser)
     page.open()
+    if page_class.__name__ == "GithubHomePageMobile":
+        import time
+        time.sleep(5)
     page.click_sign_in()
     assert "login" in browser.current_url
