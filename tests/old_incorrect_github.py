@@ -12,7 +12,6 @@ from pages.github_home_page import GithubHomePageDesktop, GithubHomePageMobile
     indirect=["browser"]
 )
 def test_github_sign_in_desktop(page_class, browser):
-    # пропускаем, если вдруг размер окна стал «мобильным»
     size = browser.get_window_size()
     if size["width"] < 800:
         pytest.skip("Desktop test skipped on mobile-like resolution")
